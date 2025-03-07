@@ -71,7 +71,15 @@ public class File : LogOutput {
     if let str = text, !str.isEmpty {
       queue.async {
         if let data = (str + "\n").data(using: .utf8) {
-          self.file?.write(data)
+			if #available(iOS 13.4, *) {
+				do {
+					try self.file?.write(contentsOf: data)
+				} catch let err {
+					print(err)
+				}
+			} else {
+				self.file?.write(data)
+			}
         }
       }
     }
